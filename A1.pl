@@ -1,5 +1,7 @@
 core(cse,[cse101,cse102,cse103,cse104]).
 eco_minor_courses([eco101,eco301,eco201]).
+prereq(cse400,[cse300,cse200,cse100]).
+prereq(cse500,[cse300,cse200,cse90]).
 print_list([]).
 print_list([X|Y]):-
     write(X),nl,
@@ -34,6 +36,20 @@ eco_minor():-
 check_eco(y):-
     write("do these core courses:"),nl,eco_minor_courses(L),print_list(L).
 
-get_electives([]).
-get_electives([X|T]):-
-    
+get_electives([],CORE).
+
+
+get_electives([C|TC],CORE):-
+    not_contains(C,CORE),prereq(C,PRE), list_has_list(PRE,CORE),
+    write(C),nl,get_electives(TC,CORE).
+
+not_contains(X,[]).
+not_contains(X,[Y|Z]):-
+    X\==Y,not_contains(X,Z).
+
+contains(X,[X|_]).
+contains(X,[Y|Z]):-
+    contains(X,Z).
+list_has_list([],_).
+list_has_list([H|T],L):-
+    contains(H,L),list_has_list(T,L).

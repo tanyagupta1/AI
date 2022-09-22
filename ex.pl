@@ -12,3 +12,14 @@ length([],0);
 length([X|T],N):-
     length(T,M),
     N is 1+M.
+
+
+contains(X,[X|_]).
+contains(X,[Y|Z]):-
+    contains(X,Z).
+list_has_list([],_).
+list_has_list([H|T],L):-
+    contains(H,L),list_has_list(T,L).
+not_contains(X,[]).
+not_contains(X,[Y|Z]):-
+    X=\=Y,not_contains(X,Z).
