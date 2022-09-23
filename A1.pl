@@ -9,6 +9,23 @@ core(csd, [cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece11
 core(ece,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, ece215, ece270, ece250, mth203, ece230,ece214, ece240,mth204, com301A, esc207A]).
 eco_minor_courses([eco101,eco301,eco201]).
 
+
+:- dynamic(suggested/1).
+:- dynamic(done/1).
+
+reset_electives:-
+    retractall(suggested(_)),
+    retractall(done(_)),
+    fail.
+reset_electives.
+getPre([]):-
+    write("Enter: "),
+    nl,
+    read(Pre),
+    dif(Pre, stop),
+    assertz(done(Pre)),
+    getPre([]).
+
 print_list([]).
 print_list([X|Y]):-
     write(X),nl,
@@ -27,7 +44,7 @@ get_core(Branch) :-
 
 
 check_res(y,TBD,DONE,[X|Y]):-
-    interactive_get_core(TBD,[X|DONE],Y). 
+    assertz(done(X)),interactive_get_core(TBD,[X|DONE],Y). 
 
 check_res(n,TBD,DONE,[X|Y]):-
    interactive_get_core([X|TBD],DONE,Y).
@@ -37,6 +54,8 @@ interactive_get_core(CORE_TBD,CORE_DONE,[]):-
     ,nl,write("these done:"),nl,print_list(CORE_DONE),
     nl,write("eligible for these:"),nl,
     \+get_electives(CORE_DONE),!,
+    write("Which of these have you done?"),nl,
+    \+getPre([]),nl,write("You can do these too"),nl,!,\+get_electives2(),!,
     get_interest(INTEREST),write("for your career:"),nl,!,get_interest_electives(INTEREST,CORE_DONE).
 
 interactive_get_core(TBD,DONE,[X|Y]):-
@@ -58,7 +77,15 @@ get_interest(INTEREST):-
 
 get_electives(CORE):-
     course(C,NM,PRE), list_has_list(PRE,CORE),
-    write(NM),nl,fail.
+    write(C),write(":"),write(NM),nl,fail.
+
+get_electives2():-
+    course(C,NM,PRE),prereqsdone(PRE),
+    write(C),write(":"),write(NM),nl,fail.
+
+prereqsdone([H|T]):-
+    done(H),prereqsdone(T).
+prereqsdone([]).
 
 not_contains(X,[]).
 not_contains(X,[Y|Z]):-
