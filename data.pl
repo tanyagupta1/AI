@@ -90,9 +90,6 @@ course_information(cse660, "Trustworthy AI systems", [cse643, cse343], [], [], w
 course_information(cse570, "Virtual Reality", [], [], [], winter, cse, ["Virtual Reality"]).
 course_information(cse538, "Wireless Networks", [cse232], [], [], winter, cse, ["Networks"]).
 
-
-
-%ECE Courses
 course_information(ece573, "Advanced Embedded Logic Design", [cse234], [], [], winter, ece, ["Embedded Logic"]).
 course_information(ece315, "Analog CMOS Circuit Design",[], [], [], monsoon, ece, ["Circuit Design"]).
 course_information(ece431, "Antennas Theory and Design", [ece230], [], [], monsoon, ece, ["Antenna"]).
@@ -137,10 +134,6 @@ course_information(ece537, "Wireless Communication from 3G to 5G",[ece240], [], 
 course_information(ece538, "Wireless Networks", [ece232], [], [], winter, ece, ["Networks"]).
 course_information(ece539, "Wireless System Implementation", [ece240], [], [], winter, ece, ["Wireless Systems"]).
 
-
-
-
-%Maths Courses
 course_information(mth212, "Abstract Algebra I", [], [], [mth302], winter, mth, ["Algebra"]).
 course_information(mth513, "Abstract Algebra II", [mth100, mth212], [], [], winter, mth, ["Algebra"]).
 course_information(mth510, "Advanced Linear Algebra", [mth100], [], [], winter, mth,["Algebra"]).
@@ -176,10 +169,6 @@ course_information(mth340, "Real Analyisis", [mth240], [], [], monsoon, mth, ["R
 course_information(mth372, "Statistical Inference", [mth201], [],[], monsoon, mth, ["Statistics"]).
 course_information(mth518, "Topics in Number Theory", [mth211], [], [], monsoon, mth, ["Number Theory"]).
 
-
-
-
-%Bio Courses
 course_information(bio321, "Algorithms in Bioinformatics", [cse222], [], [], monsoon, bio, ["Bioinformatics"]).
 course_information(bio524, "Biomedical Image Processing", [], [], [], monsoon, bio, ["Image Processing"]).
 course_information(bio361, "Biophysics", [], [], [], monsoon, bio, ["Biophysics"]).
@@ -191,8 +180,6 @@ course_information(bio531, "Introduction to Mathemaical Biology", [mth100], [],[
 course_information(bio542, "ML for biomedical applications", [], [cse343], [], monsoon, bio, ["Machine Learning"]).
 course_information(bio532, "Network Biology", [], [], [], monsoon, bio, ["Networks"]).
 
-
-%Des Courses
 course_information(des506, "Advanced topics in Human Centered Computing", [des204], [], [], winter, des, ["Human Centered Computing"]).
 course_information(des101, "Design Drawing and Visualization",[], [], [], winter, des, ["Visualization"]).
 course_information(des509, "Design Futures", [des519], [], [], monsoon, des, ["Design Futures"]).
@@ -210,10 +197,6 @@ course_information(des504, "Narratives in Visual Communication", [], [], [], win
 course_information(des202, "Visual Design and Communication",[des101], [], [], monsoon, des, ["Visual Communication"]).
 course_information(des513, "WARDI", [], [], [], monsoon, des, ["Wearables"]).
 
-
-
-
-%SSH Courses
 course_information(ssh311, "Advanced Writing", [], [], [], winter, ssh, ["Writing"]).
 course_information(ssh321, "Applied Ethics", [], [], [], winter, ssh, ["Ethics"]).
 course_information(psy305, "Attention and Perception", [], [], [], winter, ssh, ["Psychology"]).
@@ -240,9 +223,7 @@ course_information(soc210, "Sociological Theory", [], [], [], winter, ssh, ["Psy
 course_information(ssh211, "Theatre Appreciation", [], [], [hss211], monsoon, ssh, ["Theatre"]).
 course_information(soc302, "Urban Sociology", [], [], [], winter, ssh, ["Sociology"]).
 
-
-%Other Courses
-course_information(ent416, "Creativity, Innovation, and Inventive Problem Solving", [], [],[], winter, oth, ["Problem Solving", "Enterpreunership"]).
+course_information(ent416, "Creativity Innovation and Inventive Problem Solving", [], [],[], winter, oth, ["Problem Solving", "Enterpreunership"]).
 course_information(ent411, "Entrepreneurial Communication", [], [], [], monsoon, oth, ["Entrepreneurship"]).
 course_information(ent413, "Entrepreneurial Finance", [], [], [], winter, oth, ["Entrepreneurship"]).
 course_information(esc205, "Environmental Sciences", [], [], [esc207A], monsoon, oth, ["Environment"]).
