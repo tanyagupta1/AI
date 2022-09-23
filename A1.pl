@@ -1,13 +1,10 @@
 core(cse,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
-
 core(csb,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, bio101, cse201, cse231, mth203, bio221, bio214, cse222, cse202, ece113, bio221, bio213, bio361, bio512, com301A, esc207A]).
-
 core(csam,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, des101, des202, cse231, cse201, des201, mth203, cse222, des204, cse202, cse232, ssh201, com301A, esc207A]).
-
 core(csd, [cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
-
 core(ece,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, ece215, ece270, ece250, mth203, ece230,ece214, ece240,mth204, com301A, esc207A]).
-eco_minor_courses([eco101,eco301,eco201]).
+eco_minor_courses([eco311,eco301,eco221]).
+ent_minor_courses([ent411,ent412,ent415]).
 
 
 :- dynamic(suggested/1).
@@ -37,7 +34,6 @@ get_rec() :-
 
 get_core(Branch) :-
     core(Branch,X),
-    eco_minor(),!,
     write("Type y. if you have taken this core course, else type n.: "),nl,
     interactive_get_core([],[],X).
     
@@ -55,17 +51,28 @@ interactive_get_core(CORE_TBD,CORE_DONE,[]):-
     nl,write("eligible for these:"),nl,
     \+get_electives(CORE_DONE),!,
     write("Which of these have you done?"),nl,
-    \+getPre([]),nl,write("You can do these too"),nl,!,\+get_electives2(),!,
-    get_interest(INTEREST),write("for your career:"),nl,!,get_interest_electives(INTEREST,CORE_DONE).
+    \+getPre([]),nl,write("List of all courses you are eligible for: "),nl,!,\+get_electives2(),!,
+    get_interest(INTEREST),write("for your career:"),nl,!,get_interest_electives(INTEREST,CORE_DONE),!,
+    \+eco_minor(),!,\+ent_minor().
 
 interactive_get_core(TBD,DONE,[X|Y]):-
     write(X),nl,read(RES),nl,check_res(RES,TBD,DONE,[X|Y]).
 
 eco_minor():-
-    write("do you want to minor in Economics?"),nl,read(ECO),check_eco(ECO).
+    nl,write("do you want a minor degree in Economics?"),nl,read(ECO),check_eco(ECO).
 check_eco(y):-
-    write("do these core courses:"),nl,eco_minor_courses(L),print_list(L).
-check_eco(n).
+    write("You have not completed these mandatory courses:"),nl,
+    eco_minor_courses(ECOL),!,contains(ECOC,ECOL),\+done(ECOC),
+    nl,write(ECOC),assertz(suggested(ECOC)),fail.
+check_eco(n) :-fail.
+
+ent_minor():-
+    nl,write("do you want a minor degree in Entrepreneurship?"),nl,read(ENT),check_ent(ENT).
+check_ent(y):-
+    write("You have not completed these mandatory courses:"),nl,
+    ent_minor_courses(ENTL),!,contains(ENTC,ENTL),\+done(ENTC),
+    nl,write(ENTC),assertz(suggested(ENTC)),fail.
+check_ent(n) :-fail.
 
 get_interest(INTEREST):-
     write("Enter career path (the name):"),
@@ -73,6 +80,7 @@ get_interest(INTEREST):-
     nl,write("2. cybersecurity"),
     nl,write("3. biotech"),
     nl,write("4. entrepreneurship"),
+    nl,write("5. none"),
     nl,read(INTEREST).
 
 get_electives(CORE):-
@@ -110,7 +118,7 @@ career_path(data_science,[cse515,cse529,cse506,cse508]).
 career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749]).
 career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio213,bio531,bio542,bio532]).
 career_path(entrepreneurship,[ent411,ent413,ent416]).
-
+career_path(economist,[eco314,eco503,eco322,eco221,eco331,eco311,eco201,eco301,eco223]).
 
 course(bio321, "Algorithms in Bioinformatics", [cse222]).
 course(bio524, "Biomedical Image Processing", []).
@@ -332,5 +340,7 @@ course(ssh211, "Theatre Appreciation", []).
 course(soc302, "Urban Sociology", []).
 course(ent416, "Creativity Innovation and Inventive Problem Solving", []).
 course(ent411, "Entrepreneurial Communication", []).
+course(ent412, "Entrepreneurial Khichadi", []).
 course(ent413, "Entrepreneurial Finance", []).
+course(ent415, "New Venture Planning", []).
 course(esc205, "Environmental Sciences", []).
