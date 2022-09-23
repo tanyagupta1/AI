@@ -96,15 +96,18 @@ get_interest(INTEREST):-
     nl,write("2. cybersecurity"),
     nl,write("3. biotech"),
     nl,write("4. entrepreneurship"),
-    nl,write("5. none"),
+    nl,write("5. economist(MBA)"),
+    nl,write("6. software_engineer"),
+
+    nl,write("7. none"),
     nl,read(INTEREST).
 
 get_electives(CORE):-
-    course(C,NM,PRE), list_has_list(PRE,CORE),
+    course(C,NM,PRE), list_has_list(PRE,CORE),\+done(C),
     write(C),write(":"),write(NM),nl,fail.
 
 get_electives2():-
-    course(C,NM,PRE),prereqsdone(PRE),
+    course(C,NM,PRE),prereqsdone(PRE),\+done(C),
     write(C),write(":"),write(NM),nl,fail.
 
 prereqsdone([H|T]):-
@@ -126,15 +129,16 @@ get_interest_electives(INTEREST,CORE_DONE):-
     career_path(INTEREST,CAR_COURSES), \+check_pre(CAR_COURSES,CORE_DONE).
 
 check_pre(CAR_COURSES,CORE_DONE):-
-    contains(C,CAR_COURSES),course(C,NM,PRE), list_has_list(PRE,CORE_DONE),
-    write(NM),nl,fail.
+    contains(C,CAR_COURSES),course(C,NM,PRE), list_has_list(PRE,CORE_DONE),\+done(C),\+suggested(C),
+    write(NM),nl,assertz(suggested(C)),fail.
 
 
 career_path(data_science,[cse515,cse529,cse506,cse508]).
-career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749]).
+career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749,cse524,cse651]).
 career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio213,bio531,bio542,bio532]).
 career_path(entrepreneurship,[ent411,ent413,ent416]).
 career_path(economist,[eco314,eco503,eco322,eco221,eco331,eco311,eco201,eco301,eco223]).
+career_path(software_engineer,[cse701,cse583,cse582,cse503,cse584,cse734]).
 career_path(none,[]).
 
 course(bio321, "Algorithms in Bioinformatics", [cse222]).
@@ -330,8 +334,6 @@ course(des130, "Prototyping Interactive Systems", []).
 course(des504, "Narratives in Visual Communication", []).
 course(des202, "Visual Design and Communication", [des101]).
 course(des513, "WARDI", []).
-course(ssh311, "Advanced Writing", []).
-course(ssh321, "Applied Ethics", []).
 course(psy305, "Attention and Perception", []).
 course(eco314, "Behavioroul Economics", [mth201]).
 course(psy301, "Cognitive Psychology", []).
