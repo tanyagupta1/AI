@@ -1,12 +1,3 @@
-core(cse,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
-core(csb,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, bio101, cse201, cse231, mth203, bio221, bio214, cse222, cse202, ece113, bio221, bio213, bio361, bio512, com301A, esc207A]).
-core(csam,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, des101, des202, cse231, cse201, des201, mth203, cse222, des204, cse202, cse232, ssh201, com301A, esc207A]).
-core(csd, [cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
-core(ece,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, ece215, ece270, ece250, mth203, ece230,ece214, ece240,mth204, com301A, esc207A]).
-eco_minor_courses([eco311,eco301,eco221]).
-ent_minor_courses([ent411,ent412,ent415]).
-
-
 :- dynamic(suggested/1).
 :- dynamic(done/1).
 
@@ -14,22 +5,26 @@ reset_electives:-
     retractall(suggested(_)),
     retractall(done(_)),
     fail.
+
 reset_electives.
-getPre([]):-
+
+get_courses([]):-
     write("Enter course code(write fin to stop): "),
     nl,
     read(INP),
     dif(INP,fin),
     assertz(done(INP)),
-    getPre([]).
+    get_courses([]).
 
 print_list([]).
+
 print_list([X|Y]):-
-    write(X),nl,
-    print_list(Y).
+    write(X),
+    nl,print_list(Y).
 
 get_rec() :-
-    write("input branch(cse/csam/ece/csb/csd): "),nl,read(Branch),
+    write("input branch(cse/csam/ece/csb/csd): ")
+    ,nl,read(Branch),
     get_core(Branch).
 
 get_core(Branch) :-
@@ -40,52 +35,80 @@ get_core(Branch) :-
 
 
 check_res(y,TBD,DONE,[X|Y]):-
-    assertz(done(X)),interactive_get_core(TBD,[X|DONE],Y). 
+    assertz(done(X)),
+    interactive_get_core(TBD,[X|DONE],Y). 
 
 check_res(n,TBD,DONE,[X|Y]):-
    interactive_get_core([X|TBD],DONE,Y).
 
 interactive_get_core(CORE_TBD,CORE_DONE,[]):-
-    write("Complete these core courses: "),nl,print_list(CORE_TBD)
-    ,nl,write("These have been done:"),nl,print_list(CORE_DONE),
-    nl,write("You are eligible for these electives based on core courses:"),nl,
-    \+get_electives(CORE_DONE),!,
+    write("Complete these core courses: "),
+    nl,print_list(CORE_TBD),
+    nl,write("These have been done:"),
+    nl,print_list(CORE_DONE),
+    nl,write("You are eligible for these electives based on core courses:"),
+    nl,\+get_electives(CORE_DONE),!,
     write("Which of these have you done?"),nl,
-    \+getPre([]),nl,write("List of all electives you are eligible for: "),nl,!,\+get_electives2(),!,
-    get_interest(INTEREST),write("For your career path taking these courses would be beneficial:"),nl,!,get_interest_electives(INTEREST,CORE_DONE),!,
+    \+get_courses([]),nl,write("List of all electives you are eligible for: "),
+    nl,!,\+get_electives2(),!,
+    get_interest(INTEREST),
+    write("For your career path taking these courses would be beneficial:"),
+    nl,!,get_interest_electives(INTEREST,CORE_DONE),!,
     \+eco_minor(),!,\+ent_minor().
 
 interactive_get_core(TBD,DONE,[X|Y]):-
-    write(X),nl,read(RES),nl,check_res(RES,TBD,DONE,[X|Y]).
+    write(X),nl,read(RES),
+    nl,check_res(RES,TBD,DONE,[X|Y]).
 
 eco_minor():-
-    nl,write("do you want a minor degree in Economics?"),nl,read(ECO),\+check_eco(ECO),more_eco_recs(ECO).
+    nl,write("do you want a minor degree in Economics?"),
+    nl,read(ECO),
+    \+check_eco(ECO),
+    more_eco_recs(ECO).
+
 check_eco(y):-
     write("You have not completed these mandatory courses:"),nl,
-    eco_minor_courses(ECOL),!,contains(ECOC,ECOL),\+done(ECOC),
-    nl,write(ECOC),assertz(suggested(ECOC)),fail.
+    eco_minor_courses(ECOL),!,
+    contains(ECOC,ECOL),\+done(ECOC),
+    nl,write(ECOC),
+    assertz(suggested(ECOC)),fail.
+
 check_eco(n) :-fail.
+
 more_eco_recs(y):-
-    nl,write("do you want additional Economics electives you can take rn(y./n.)?"),nl,read(ECOR),check_eco_rec(ECOR).
+    nl,write("do you want additional Economics electives you can take rn(y./n.)?"),
+    nl,read(ECOR),check_eco_rec(ECOR).
 
 check_eco_rec(y):-
-    career_path(economist,ECO_CR),contains(EC,ECO_CR),course(EC,NM,PRE),prereqsdone(PRE),\+done(EC),\+suggested(EC),
+    career_path(economist,ECO_CR),
+    contains(EC,ECO_CR),course(EC,NM,PRE),
+    prereqsdone(PRE),\+done(EC),\+suggested(EC),
     write(EC),write(":"),write(NM),nl,fail.
 
 check_eco_rec(n):-fail.
 
 ent_minor():-
-    nl,write("do you want a minor degree in Entrepreneurship(y./n.)?"),nl,read(ENT),\+check_ent(ENT),more_ent_recs(ENT).
+    nl,write("do you want a minor degree in Entrepreneurship(y./n.)?"),
+    nl,read(ENT),\+check_ent(ENT),more_ent_recs(ENT).
+
 check_ent(y):-
     write("You have not completed these mandatory courses:"),nl,
-    ent_minor_courses(ENTL),!,contains(ENTC,ENTL),\+done(ENTC),
-    nl,write(ENTC),assertz(suggested(ENTC)),fail.
+    ent_minor_courses(ENTL),!,
+    contains(ENTC,ENTL),\+done(ENTC),
+    nl,write(ENTC),
+    assertz(suggested(ENTC)),fail.
+
 check_ent(n) :-fail.
 
 more_ent_recs(y):-
-    nl,write("do you want additional Entrepreneurship electives you can take rn?"),nl,read(ENTR),check_ent_rec(ENTR).
+    nl,write("do you want additional Entrepreneurship electives you can take rn?"),
+    nl,read(ENTR),
+    check_ent_rec(ENTR).
+
 check_ent_rec(y):-
-    career_path(entrepreneurship,ENT_CR),contains(EN,ENT_CR),course(EN,NM,PRE),prereqsdone(PRE),\+done(EN),\+suggested(EN),
+    career_path(entrepreneurship,ENT_CR),
+    contains(EN,ENT_CR),course(EN,NM,PRE),
+    prereqsdone(PRE),\+done(EN),\+suggested(EN),
     write(EN),write(":"),write(NM),nl,fail.
 
 check_ent_rec(n):-fail.
@@ -98,20 +121,23 @@ get_interest(INTEREST):-
     nl,write("4. entrepreneurship"),
     nl,write("5. economist(MBA)"),
     nl,write("6. software_engineer"),
-
     nl,write("7. none"),
     nl,read(INTEREST).
 
 get_electives(CORE):-
-    course(C,NM,PRE), list_has_list(PRE,CORE),\+done(C),
+    course(C,NM,PRE), 
+    list_has_list(PRE,CORE),
+    \+done(C),
     write(C),write(":"),write(NM),nl,fail.
 
 get_electives2():-
-    course(C,NM,PRE),prereqsdone(PRE),\+done(C),
+    course(C,NM,PRE),
+    prereqsdone(PRE),\+done(C),
     write(C),write(":"),write(NM),nl,fail.
 
 prereqsdone([H|T]):-
     done(H),prereqsdone(T).
+
 prereqsdone([]).
 
 not_contains(X,[]).
@@ -119,18 +145,24 @@ not_contains(X,[Y|Z]):-
     X=\=Y,not_contains(X,Z).
 
 contains(X,[X|_]).
+
 contains(X,[Y|Z]):-
     contains(X,Z).
+
 list_has_list([],_).
+
 list_has_list([H|T],L):-
     contains(H,L),list_has_list(T,L).
 
 get_interest_electives(INTEREST,CORE_DONE):-
-    career_path(INTEREST,CAR_COURSES), \+check_pre(CAR_COURSES,CORE_DONE).
+    career_path(INTEREST,CAR_COURSES),
+    \+check_pre(CAR_COURSES,CORE_DONE).
 
 check_pre(CAR_COURSES,CORE_DONE):-
-    contains(C,CAR_COURSES),course(C,NM,PRE), list_has_list(PRE,CORE_DONE),\+done(C),\+suggested(C),
-    write(NM),nl,assertz(suggested(C)),fail.
+    contains(C,CAR_COURSES),course(C,NM,PRE), 
+    list_has_list(PRE,CORE_DONE),\+done(C),\+suggested(C),
+    write(NM),nl,
+    assertz(suggested(C)),fail.
 
 
 career_path(data_science,[cse515,cse529,cse506,cse508]).
@@ -139,6 +171,7 @@ career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio
 career_path(entrepreneurship,[ent411,ent413,ent416]).
 career_path(economist,[eco314,eco503,eco322,eco221,eco331,eco311,eco201,eco301,eco223]).
 career_path(software_engineer,[cse701,cse583,cse582,cse503,cse584,cse734]).
+
 career_path(none,[]).
 
 course(bio321, "Algorithms in Bioinformatics", [cse222]).
@@ -242,6 +275,21 @@ course(cse701, "Topics in SE: AI in SE", []).
 course(cse660, "Trustworthy AI systems", [cse643, cse343]).
 course(cse570, "Virtual Reality", []).
 course(cse538, "Wireless Networks", [cse232]).
+course(des506, "Advanced Topics in Human Centered Computing", [des204]).
+course(des101, "Design Drawing and Visualization", []).
+course(des509, "Design Futures", [des519]).
+course(des519, "Design of Interactive Systems", []).
+course(des201, "Design Process and Perspectives", [des101]).
+course(des512, "Game Design and Development", []).
+course(des520, "Human Centered AI", [des204, cse343]).
+course(des204, "Human Computer Interaction", []).
+course(des502, "Introduction to 2D animation", [des518]).
+course(des302, "Introduction to Animation and Graphics", []).
+course(des102, "Introduction to HCI", []).
+course(des518, "Introduction to Motion Graphics", [des518]).
+course(des130, "Prototyping Interactive Systems", []).
+course(des504, "Narratives in Visual Communication", []).
+course(des202, "Visual Design and Communication", [des101]).
 course(ece573, "Advanced Embedded Logic Design", [cse234]).
 course(ece315, "Analog CMOS Circuit Design", []).
 course(ece431, "Antennas Theory and Design", [ece230]).
@@ -318,25 +366,8 @@ course(mth201, "Probability and Statistics", []).
 course(mth240, "Real Analyisis", []).
 course(mth372, "Statistical Inference", [mth201]).
 course(mth518, "Topics in Number Theory", [mth211]).
-course(des506, "Advanced Topics in Human Centered Computing", [des204]).
-course(des101, "Design Drawing and Visualization", []).
-course(des509, "Design Futures", [des519]).
-course(des519, "Design of Interactive Systems", []).
-course(des201, "Design Process and Perspectives", [des101]).
-course(des512, "Game design and Development", []).
-course(des520, "Human Centered AI", [des204, cse343]).
-course(des204, "Human Computer Interaction", []).
-course(des502, "Introduction to 2D animation", [des518]).
-course(des302, "Introduction to Animation and Graphics", []).
-course(des102, "Introduction to HCI", []).
-course(des518, "Introduction to Motion Graphics", [des518]).
-course(des130, "Prototyping Interactive Systems", []).
-course(des504, "Narratives in Visual Communication", []).
-course(des202, "Visual Design and Communication", [des101]).
-course(des513, "WARDI", []).
 course(psy305, "Attention and Perception", []).
 course(eco314, "Behavioroul Economics", [mth201]).
-course(psy301, "Cognitive Psychology", []).
 course(ssh124, "Critical Thinking", []).
 course(soc206, "Business Anthropology", []).
 course(eco503, "Decision Theory", []).
@@ -363,3 +394,12 @@ course(ent412, "Entrepreneurial Khichadi", []).
 course(ent413, "Entrepreneurial Finance", []).
 course(ent415, "New Venture Planning", []).
 course(esc205, "Environmental Sciences", []).
+
+
+core(cse,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
+core(csb,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, bio101, cse201, cse231, mth203, bio221, bio214, cse222, cse202, ece113, bio221, bio213, bio361, bio512, com301A, esc207A]).
+core(csam,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, des101, des202, cse231, cse201, des201, mth203, cse222, des204, cse202, cse232, ssh201, com301A, esc207A]).
+core(csd, [cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, cse201, cse231, cse121, cse202, cse222, cse232, com301A, esc207A]).
+core(ece,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, ece215, ece270, ece250, mth203, ece230,ece214, ece240,mth204, com301A, esc207A]).
+eco_minor_courses([eco311,eco301,eco221]).
+ent_minor_courses([ent411,ent412,ent415]).
