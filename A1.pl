@@ -16,11 +16,11 @@ reset_electives:-
     fail.
 reset_electives.
 getPre([]):-
-    write("Enter: "),
+    write("Enter course code(write fin to stop): "),
     nl,
-    read(Pre),
-    dif(Pre, stop),
-    assertz(done(Pre)),
+    read(INP),
+    dif(INP,fin),
+    assertz(done(INP)),
     getPre([]).
 
 print_list([]).
@@ -29,7 +29,7 @@ print_list([X|Y]):-
     print_list(Y).
 
 get_rec() :-
-    write("input branch "),nl,read(Branch),
+    write("input branch(cse/csam/ece/csb/csd): "),nl,read(Branch),
     get_core(Branch).
 
 get_core(Branch) :-
@@ -46,33 +46,49 @@ check_res(n,TBD,DONE,[X|Y]):-
    interactive_get_core([X|TBD],DONE,Y).
 
 interactive_get_core(CORE_TBD,CORE_DONE,[]):-
-    write("complete these core courses: "),nl,print_list(CORE_TBD)
-    ,nl,write("these done:"),nl,print_list(CORE_DONE),
-    nl,write("eligible for these:"),nl,
+    write("Complete these core courses: "),nl,print_list(CORE_TBD)
+    ,nl,write("These have been done:"),nl,print_list(CORE_DONE),
+    nl,write("You are eligible for these electives based on core courses:"),nl,
     \+get_electives(CORE_DONE),!,
     write("Which of these have you done?"),nl,
-    \+getPre([]),nl,write("List of all courses you are eligible for: "),nl,!,\+get_electives2(),!,
-    get_interest(INTEREST),write("for your career:"),nl,!,get_interest_electives(INTEREST,CORE_DONE),!,
+    \+getPre([]),nl,write("List of all electives you are eligible for: "),nl,!,\+get_electives2(),!,
+    get_interest(INTEREST),write("For your career path taking these courses would be beneficial:"),nl,!,get_interest_electives(INTEREST,CORE_DONE),!,
     \+eco_minor(),!,\+ent_minor().
 
 interactive_get_core(TBD,DONE,[X|Y]):-
     write(X),nl,read(RES),nl,check_res(RES,TBD,DONE,[X|Y]).
 
 eco_minor():-
-    nl,write("do you want a minor degree in Economics?"),nl,read(ECO),check_eco(ECO).
+    nl,write("do you want a minor degree in Economics?"),nl,read(ECO),\+check_eco(ECO),more_eco_recs(ECO).
 check_eco(y):-
     write("You have not completed these mandatory courses:"),nl,
     eco_minor_courses(ECOL),!,contains(ECOC,ECOL),\+done(ECOC),
     nl,write(ECOC),assertz(suggested(ECOC)),fail.
 check_eco(n) :-fail.
+more_eco_recs(y):-
+    nl,write("do you want additional Economics electives you can take rn(y./n.)?"),nl,read(ECOR),check_eco_rec(ECOR).
+
+check_eco_rec(y):-
+    career_path(economist,ECO_CR),contains(EC,ECO_CR),course(EC,NM,PRE),prereqsdone(PRE),\+done(EC),\+suggested(EC),
+    write(EC),write(":"),write(NM),nl,fail.
+
+check_eco_rec(n):-fail.
 
 ent_minor():-
-    nl,write("do you want a minor degree in Entrepreneurship?"),nl,read(ENT),check_ent(ENT).
+    nl,write("do you want a minor degree in Entrepreneurship(y./n.)?"),nl,read(ENT),\+check_ent(ENT),more_ent_recs(ENT).
 check_ent(y):-
     write("You have not completed these mandatory courses:"),nl,
     ent_minor_courses(ENTL),!,contains(ENTC,ENTL),\+done(ENTC),
     nl,write(ENTC),assertz(suggested(ENTC)),fail.
 check_ent(n) :-fail.
+
+more_ent_recs(y):-
+    nl,write("do you want additional Entrepreneurship electives you can take rn?"),nl,read(ENTR),check_ent_rec(ENTR).
+check_ent_rec(y):-
+    career_path(entrepreneurship,ENT_CR),contains(EN,ENT_CR),course(EN,NM,PRE),prereqsdone(PRE),\+done(EN),\+suggested(EN),
+    write(EN),write(":"),write(NM),nl,fail.
+
+check_ent_rec(n):-fail.
 
 get_interest(INTEREST):-
     write("Enter career path (the name):"),
@@ -119,6 +135,7 @@ career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749]).
 career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio213,bio531,bio542,bio532]).
 career_path(entrepreneurship,[ent411,ent413,ent416]).
 career_path(economist,[eco314,eco503,eco322,eco221,eco331,eco311,eco201,eco301,eco223]).
+career_path(none,[]).
 
 course(bio321, "Algorithms in Bioinformatics", [cse222]).
 course(bio524, "Biomedical Image Processing", []).
@@ -128,7 +145,7 @@ course(bio211, "Cell Biology", []).
 course(bio534, "Introduction to Computational Neuroscience", []).
 course(bio213, "Introduction to Quantitative Biology", [mth100]).
 course(bio531, "Introduction to Mathemaical Biology", [mth100]).
-course(bio542, "ML for biomedical applications", []).
+course(bio542, "Machine Learning for Biomedical Applications", []).
 course(bio532, "Network Biology", []).
 course(cse320, "Advanced Algorithms", [cse102]).
 course(cse441, "Advanced Biometrics", [mth201]).
@@ -165,11 +182,11 @@ course(cse504, "Decision Procedures", [cse102, cse201, mth210]).
 course(cse641, "Deep Learning", []).
 course(cse501, "Designing Human Centered Systems", []).
 course(cse121, "Discrete Mathematics", []).
-course(cse530, "Distributed Systems: Concepts And Designs", [cse232, cse222]).
+course(cse530, "Distributed Systems Concepts And Designs", [cse232, cse222]).
 course(cse663, "EdgeAI", [cse343]).
 course(cse345, "Foundations of Computer Security", []).
 course(cse502, "Foundations of Parallel Programming", [cse102, cse101, cse201]).
-course(cse202, "Fundamentals of Database Management System", [cse102]).
+course(cse202, "Fundamentals of Database Management Systems", [cse102]).
 course(cse5GP, "Geometry Processing", [cse101]).
 course(cse560, "GPU Computing", [cse101]).
 course(cse656, "Information Integration and Applications", [cse202]).
@@ -214,8 +231,8 @@ course(cse572, "Speech and Audio Processing", [mth100, ece250]).
 course(cse609, "Statistical Computation", [mth201]).
 course(cse342, "Statistical Machine Learning", [cse101, mth201]).
 course(cse322, "Theory Of Computation", [mth210]).
-course(cse516, "Thories of Deep Learning", []).
-course(cse524, "Theory of Modern cryptography", []).
+course(cse516, "Theories of Deep Learning", []).
+course(cse524, "Theory of Modern Cryptography", []).
 course(cse651, "Topics in Adaptive Cybersecurity", [cse345]).
 course(cse701, "Topics in SE: AI in SE", []).
 course(cse660, "Trustworthy AI systems", [cse643, cse343]).
@@ -237,7 +254,7 @@ course(ece270, "Embedded Logic Design", []).
 course(ece230, "Fields and Waves", [mth100]).
 course(ece522, "Integrated Circuit Fabrication", []).
 course(ece214, "Integrated Electronics", [ece111, ece113, des130]).
-course(ece519, "Intelligent Application Implementation on Hetrogeneous Platforms", [cse112]).
+course(ece519, "Intelligent Application Implementation on Heterogeneous Platforms", [cse112]).
 course(ece517, "Introduction to Nanoelectronics", []).
 course(ece570, "Linear Systems Thoery", []).
 course(ece520, "Low Voltage Analog Circuit Design", [ece315]).
@@ -270,26 +287,26 @@ course(mth510, "Advanced Linear Algebra", [mth100]).
 course(mth302, "Algebra", []).
 course(mth512, "Algebraic Number Theory", []).
 course(mth516, "Analytic Number Theory", [mth341]).
-course(mth544, "Calculas in R^N", [mth100, mth203]).
+course(mth544, "Calculus in R^N", [mth100, mth203]).
 course(mth576, "Categorical Data Analysis", [mth201]).
 course(mth514, "Coding Theory", [mth100, mth212, mth513]).
 course(mth517, "Combinatorial Optimization", [mth374]).
 course(mth311, "Combinatorics and Its Applications", [mth100]).
 course(mth341, "Complex Analysis", [mth240]).
 course(mth577, "Convex Optimization", [mth100]).
-course(mth204, "Diffrential Equations", [mth203]).
+course(mth204, "Differential Equations", [mth203]).
 course(mth210, "Discrete Structures", []).
 course(mth545, "Finite & Spectral Element Methods", [mth100, mth203, mth204]).
 course(mth375, "Fluid Mechainics", [mth204]).
 course(mth310, "Graph Theory", []).
 course(mth571, "Integral Transforms", [mth204]).
 course(mth343, "Introduction to Dynamical Systems", []).
-course(mth542, "Introduction to Functial Analysis", [mth100]).
+course(mth542, "Introduction to Functional Analysis", [mth100]).
 course(mth300, "Introduction to Mathematical Logic", []).
 course(mth550, "Introduction to PDE", [mth204]).
 course(mth100, "Linear Algebra", []).
 course(mth374, "Linear Optimization", [mth100]).
-course(mth203, "Multivariate Calculas", []).
+course(mth203, "Multivariate Calculus", []).
 course(mth211, "Number Theory", []).
 course(mth270, "Numerical Methods", [mth100, mth204]).
 course(mth562, "Point Set Topology", []).
@@ -297,7 +314,7 @@ course(mth201, "Probability and Statistics", []).
 course(mth240, "Real Analyisis", []).
 course(mth372, "Statistical Inference", [mth201]).
 course(mth518, "Topics in Number Theory", [mth211]).
-course(des506, "Advanced topics in Human Centered Computing", [des204]).
+course(des506, "Advanced Topics in Human Centered Computing", [des204]).
 course(des101, "Design Drawing and Visualization", []).
 course(des509, "Design Futures", [des519]).
 course(des519, "Design of Interactive Systems", []).
