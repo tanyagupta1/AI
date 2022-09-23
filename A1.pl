@@ -8,8 +8,7 @@ core(csd, [cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece11
 
 core(ece,[cse101, ece111, mth100, des130, com101, cse102, cse112, mth201, ece113, ece215, ece270, ece250, mth203, ece230,ece214, ece240,mth204, com301A, esc207A]).
 eco_minor_courses([eco101,eco301,eco201]).
-prereq(cse400,[cse300,cse200,cse100]).
-prereq(cse500,[cse300,cse200,cse90]).
+
 print_list([]).
 print_list([X|Y]):-
     write(X),nl,
@@ -37,7 +36,8 @@ interactive_get_core(CORE_TBD,CORE_DONE,[]):-
     write("complete these core courses: "),nl,print_list(CORE_TBD)
     ,nl,write("these done:"),nl,print_list(CORE_DONE),
     nl,write("eligible for these:"),nl,
-    \+get_electives(CORE_DONE).
+    \+get_electives(CORE_DONE),!,
+    get_interest(INTEREST),write("for your career:"),nl,!,get_interest_electives(INTEREST,CORE_DONE).
 
 interactive_get_core(TBD,DONE,[X|Y]):-
     write(X),nl,read(RES),nl,check_res(RES,TBD,DONE,[X|Y]).
@@ -48,6 +48,13 @@ check_eco(y):-
     write("do these core courses:"),nl,eco_minor_courses(L),print_list(L).
 check_eco(n).
 
+get_interest(INTEREST):-
+    write("Enter career path (the name):"),
+    nl,write("1. data_science"),
+    nl,write("2. cybersecurity"),
+    nl,write("3. biotech"),
+    nl,write("4. entrepreneurship"),
+    nl,read(INTEREST).
 
 get_electives(CORE):-
     course(C,NM,PRE), list_has_list(PRE,CORE),
@@ -64,7 +71,30 @@ list_has_list([],_).
 list_has_list([H|T],L):-
     contains(H,L),list_has_list(T,L).
 
+get_interest_electives(INTEREST,CORE_DONE):-
+    career_path(INTEREST,CAR_COURSES), \+check_pre(CAR_COURSES,CORE_DONE).
 
+check_pre(CAR_COURSES,CORE_DONE):-
+    contains(C,CAR_COURSES),course(C,NM,PRE), list_has_list(PRE,CORE_DONE),
+    write(NM),nl,fail.
+
+
+career_path(data_science,[cse515,cse529,cse506,cse508]).
+career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749]).
+career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio213,bio531,bio542,bio532]).
+career_path(entrepreneurship,[ent411,ent413,ent416]).
+
+
+course(bio321, "Algorithms in Bioinformatics", [cse222]).
+course(bio524, "Biomedical Image Processing", []).
+course(bio361, "Biophysics", []).
+course(bio545, "Biostatistics", []).
+course(bio211, "Cell Biology", []).
+course(bio534, "Introduction to Computational Neuroscience", []).
+course(bio213, "Introduction to Quantitative Biology", [mth100]).
+course(bio531, "Introduction to Mathemaical Biology", [mth100]).
+course(bio542, "ML for biomedical applications", []).
+course(bio532, "Network Biology", []).
 course(cse320, "Advanced Algorithms", [cse102]).
 course(cse441, "Advanced Biometrics", [mth201]).
 course(cse562, "Advanced Computer Vision", [cse343]).
@@ -90,7 +120,7 @@ course(cse232, "Computer Networks", [cse101, cse231, cse222]).
 course(cse112, "Computer Organization", [ece111]).
 course(cse344, "Computer Vision", [mth100]).
 course(cse585, "Computing for Medicine", []).
-course(cse606A, "Data Lifecycle Management", [cse343]).
+course(cse606A,"Data Lifecycle Management", [cse343]).
 course(cse506, "Data Mining", [cse202, cse101, mth100, mth201]).
 course(cse558, "Data Science", [cse101, cse343]).
 course(cse102, "Data Structures And Algorithms", [cse101]).
@@ -109,7 +139,7 @@ course(cse5GP, "Geometry Processing", [cse101]).
 course(cse560, "GPU Computing", [cse101]).
 course(cse656, "Information Integration and Applications", [cse202]).
 course(cse508, "Information Retrieval", [cse202, cse201, cse102]).
-course(cse528, "Introduction to Blockchain and cryptocurrency", []).
+course(cse528, "Introduction to Blockchain and Cryptocurrency", []).
 course(cse525, "Introduction to Graduate Algorithms", [cse222]).
 course(cse140, "Introduction to Intelligent Systems", []).
 course(cse571, "Introduction to Media Computing", []).
@@ -213,8 +243,8 @@ course(mth311, "Combinatorics and Its Applications", [mth100]).
 course(mth341, "Complex Analysis", [mth240]).
 course(mth577, "Convex Optimization", [mth100]).
 course(mth204, "Diffrential Equations", [mth203]).
-course(mth210, "Discrete Structure", []).
-course(mth545, "Finite & SPectral Element Methods", [mth100, mth203, mth204]).
+course(mth210, "Discrete Structures", []).
+course(mth545, "Finite & Spectral Element Methods", [mth100, mth203, mth204]).
 course(mth375, "Fluid Mechainics", [mth204]).
 course(mth310, "Graph Theory", []).
 course(mth571, "Integral Transforms", [mth204]).
@@ -228,21 +258,10 @@ course(mth203, "Multivariate Calculas", []).
 course(mth211, "Number Theory", []).
 course(mth270, "Numerical Methods", [mth100, mth204]).
 course(mth562, "Point Set Topology", []).
-course(mth201, "P&S", []).
+course(mth201, "Probability and Statistics", []).
 course(mth240, "Real Analyisis", []).
-course(mth340, "Real Analyisis", [mth240]).
 course(mth372, "Statistical Inference", [mth201]).
 course(mth518, "Topics in Number Theory", [mth211]).
-course(bio321, "Algorithms in Bioinformatics", [cse222]).
-course(bio524, "Biomedical Image Processing", []).
-course(bio361, "Biophysics", []).
-course(bio545, "Biostatistics", []).
-course(bio211, "Cell Biology", []).
-course(bio534, "Introduction to Computational Neuroscience", []).
-course(bio213, "Introduction to Quantitative Biology", [mth100]).
-course(bio531, "Introduction to Mathemaical Biology", [mth100]).
-course(bio542, "ML for biomedical applications", []).
-course(bio532, "Network Biology", []).
 course(des506, "Advanced topics in Human Centered Computing", [des204]).
 course(des101, "Design Drawing and Visualization", []).
 course(des509, "Design Futures", [des519]).
