@@ -121,7 +121,8 @@ get_interest(INTEREST):-
     nl,write("4. entrepreneurship"),
     nl,write("5. economist(MBA)"),
     nl,write("6. software_engineer"),
-    nl,write("7. none"),
+    nl,write("7. pure_mathematician"),
+    nl,write("8. none"),
     nl,read(INTEREST).
 
 get_electives(CORE):-
@@ -165,13 +166,13 @@ check_pre(CAR_COURSES,CORE_DONE):-
     assertz(suggested(C)),fail.
 
 
-career_path(data_science,[cse515,cse529,cse506,cse508]).
+career_path(data_science,[cse343,cse660,cse342, cse606,cse606A,cse558,cse515,cse529,cse506,cse508,cse663]).
 career_path(cybersecurity,[cse546,cse345,cse655,cse350,cse749,cse524,cse651]).
 career_path(biotech,[cse441,cse585,bio321,bio524,bio361,bio545,bio211,bio534,bio213,bio531,bio542,bio532]).
 career_path(entrepreneurship,[ent411,ent413,ent416]).
 career_path(economist,[eco314,eco503,eco322,eco221,eco331,eco311,eco201,eco301,eco223]).
-career_path(software_engineer,[cse701,cse583,cse582,cse503,cse584,cse734]).
-
+career_path(software_engineer,[cse701,cse583,cse582,cse503,cse584,cse734,cse535]).
+career_path(pure_mathematician,[mth212,mth310,mth512,mth576,mth577,mth544,mth550]).
 career_path(none,[]).
 
 course(bio321, "Algorithms in Bioinformatics", [cse222]).
