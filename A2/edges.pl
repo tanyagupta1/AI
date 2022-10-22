@@ -51,4 +51,21 @@ dfs_with_dist(Path,S,D,V,G):-
    ND is D+DD,
    dfs_with_dist([V|Path],S,ND,C,G).
 
-best
+minOfTwo(X, Y, Y):-
+    X >=Y.
+minOfTwo(X, Y, X):-
+    X <Y.
+minL([X], X).
+minL([H | T], X) :-
+	minL(T, I),
+	minOfTwo(H, I, X).
+
+% dfs(Path,V,G):-
+%     V=G, print_list([V|Path]).
+
+
+% dfs(Path,V,G):-
+%    edge(V,C,_),
+%    \+is_mem(C,Path),
+%    dfs([V|Path],C,G).
+children(L,Path, P) :- findall(X,(edge(P,X,_),\+is_mem(X,Path),\+(X=P)), L).
