@@ -2,10 +2,12 @@
 
 :- dynamic edge/3.
 :- dynamic column_keys/1.
+:- dynamic h_n/3.
 
 prepare_db(File) :-
     retractall(column_keys(_)),
     retractall(edge(_,_,_)),
+    retractall(h_n(_,_,_)),
     forall(read_row(File, Row), store_row(Row)).
 
 store_row(Row) :-
@@ -17,7 +19,7 @@ store_row(Row) :-
     ).
 
 store_sample(RowKey, ColKey, Sample) :-
-    not(RowKey=ColKey),assertz(edge(RowKey, ColKey, Sample)),assertz(edge(ColKey, RowKey, Sample)).
+    assertz(edge(RowKey, ColKey, Sample)),assertz(edge(ColKey, RowKey, Sample)).
 
 read_row(File, Row) :-
     csv_read_file_row(File, Row,[]).
