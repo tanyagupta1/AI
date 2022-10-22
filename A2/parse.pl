@@ -17,7 +17,7 @@ store_row(Row) :-
     ).
 
 store_sample(RowKey, ColKey, Sample) :-
-    not(RowKey=ColKey),assertz(edge(RowKey, ColKey, Sample)).
+    not(RowKey=ColKey),assertz(edge(RowKey, ColKey, Sample)),assertz(edge(ColKey, RowKey, Sample)).
 
 read_row(File, Row) :-
     csv_read_file_row(File, Row,[]).

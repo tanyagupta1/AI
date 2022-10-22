@@ -1,3 +1,4 @@
+/*
 edge(a,b).
 edge(a,c).
 edge(b,d).
@@ -10,7 +11,7 @@ edge(c,f).
 edge(c,g).
 edge(f,k).
 goal(h).
-
+*/
 print_list([]).
 
 print_list([X|Y]):-
@@ -29,6 +30,6 @@ dfs(Path,V,G):-
     V=G, print_list([V|Path]).
 
 dfs(Path,V,G):-
-   edge(V,C),
+   edge(V,C,_),
    \+is_mem(C,Path),
    dfs([V|Path],C,G).
