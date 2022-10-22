@@ -18,16 +18,17 @@ for h in header:
 for row in csvreader:
     cities.add(row[0])
 
+
 for u in cities:
     for v in cities:
-        if(u!=v):
+        if(u==v):
             city1 = geolocator.geocode(u)
             city2 = geolocator.geocode(v)
             kolkata = (city1.latitude,city1.longitude)
             delhi = (city2.latitude,city2.longitude)
-            fact = "h_n("+u+','+v+','+str(great_circle(kolkata, delhi).km)+")\n"
+            fact = "h_n('"+u+"','"+v+"',"+str(great_circle(kolkata, delhi).km)+").\n"
             print(fact)
-            file2.write(fact)
+            # file2.write(fact)
             # print(u,' ',v,' ',great_circle(kolkata, delhi).km)
 
     

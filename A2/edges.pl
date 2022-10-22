@@ -51,14 +51,14 @@ dfs_with_dist(Path,S,D,V,G):-
    ND is D+DD,
    dfs_with_dist([V|Path],S,ND,C,G).
 
-minOfTwo(X, Y, Y):-
-    X >=Y.
-minOfTwo(X, Y, X):-
-    X <Y.
-minL([X], X).
-minL([H | T], X) :-
-	minL(T, I),
-	minOfTwo(H, I, X).
+minOfTwo(X, Y, X,G):-
+    h_n(X,G,X_d),h_n(Y,G,Y_d),X_d<Y_d.
+minOfTwo(X, Y, Y,G):-
+   h_n(X,G,X_d),h_n(Y,G,Y_d),X_d>=Y_d.
+minL([X], X,G).
+minL([H | T], X,G) :-
+	minL(T, I,G),
+	minOfTwo(H, I, X,G).
 
 % dfs(Path,V,G):-
 %     V=G, print_list([V|Path]).
@@ -69,3 +69,12 @@ minL([H | T], X) :-
 %    \+is_mem(C,Path),
 %    dfs([V|Path],C,G).
 children(L,Path, P) :- findall(X,(edge(P,X,_),\+is_mem(X,Path),\+(X=P)), L).
+
+best_first(Path,S,D,V,G):-
+    V=G, print_list([V|Path]),
+    nl,writeln(distance(D)).
+
+best_first(Path,S,D,V,G):-
+   children(List,Path,V),minL(List,C,G),edge(V,C,DD),
+   ND is D+DD,
+   best_first([V|Path],S,ND,C,G).
