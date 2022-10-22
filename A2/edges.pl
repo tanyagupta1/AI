@@ -50,3 +50,5 @@ dfs_with_dist(Path,S,D,V,G):-
    \+is_mem(C,Path),
    ND is D+DD,
    dfs_with_dist([V|Path],S,ND,C,G).
+
+best
