@@ -12,7 +12,7 @@ edge(c,g).
 edge(f,k).
 goal(h).
 */
-
+:- dynamic leaves/1.
 
 print_list([]).
 
@@ -70,11 +70,26 @@ minL([H | T], X,G) :-
 %    dfs([V|Path],C,G).
 children(L,Path, P) :- findall(X,(edge(P,X,_),\+is_mem(X,Path),\+(X=P)), L).
 
-best_first(Path,S,D,V,G):-
-    V=G, print_list([V|Path]),
-    nl,writeln(distance(D)).
+leaves_list(L) :- findall(X,(leaves(X)), L).
+
+append_list_to_leaves([]) :-fail.
+append_list_to_leaves([H1|T1]):-
+    \+append_list_to_leaves(T1),\+leaves(H1),assert(leaves(H1)),fail.
+
 
 best_first(Path,S,D,V,G):-
-   children(List,Path,V),minL(List,C,G),edge(V,C,DD),
+    V=G, print_list([V|Path]),
+    nl,writeln(distance(D)),retractall(leaves(_)).
+
+best_first(Path,S,D,V,G):-
+   children(List,Path,V),
+   \+append_list_to_leaves(List),
+   leaves_list(Leaves_list),
+   minL(Leaves_list,C,G),
+   retract(leaves(C)),
+   edge(V,C,DD),
    ND is D+DD,
    best_first([V|Path],S,ND,C,G).
+
+% you have leaves and you have path, at node v, you have to append its children to leaves, 
+% then choose the min leaf and remove it from leaves and add it to path
