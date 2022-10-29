@@ -21,14 +21,12 @@ for row in csvreader:
 
 for u in cities:
     for v in cities:
-        if(u==v):
-            city1 = geolocator.geocode(u)
-            city2 = geolocator.geocode(v)
-            kolkata = (city1.latitude,city1.longitude)
-            delhi = (city2.latitude,city2.longitude)
-            fact = "h_n('"+u+"','"+v+"',"+str(great_circle(kolkata, delhi).km)+").\n"
-            print(fact)
-            # file2.write(fact)
-            # print(u,' ',v,' ',great_circle(kolkata, delhi).km)
+        city1 = geolocator.geocode(u)
+        city2 = geolocator.geocode(v)
+        coordinates_1 = (city1.latitude,city1.longitude)
+        coordinates_2 = (city2.latitude,city2.longitude)
+        fact = "h_n('"+u+"','"+v+"',"+str(great_circle(coordinates_1,coordinates_2).km)+").\n"
+        print(fact)
+        file2.write(fact)
 
     
