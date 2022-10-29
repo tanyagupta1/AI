@@ -14,6 +14,24 @@ goal(h).
 */
 :- dynamic leaves/1.
 
+
+initialize:-
+    consult(parse),
+    prepare_db('roaddistance.csv'),
+    consult(heuristics).
+
+search_type('DFS',Src,Dst):- dfs_with_dist([],Src,0,Src,Dst).
+search_type('BestFirst',Src,Dst):- best_first([],Src,0,Src,Dst).
+
+get_path() :-
+    write("Source Node:"),
+    nl,read(Source),
+    write("Destintion Node:"),
+    nl,read(Dest),
+    write("Search Type(DFS,BestFirst) :"),
+    nl,read(Type),
+    search_type(Type,Source,Dest).
+
 print_list([]).
 
 print_list([X|Y]):-
@@ -36,13 +54,10 @@ dfs(Path,V,G):-
    \+is_mem(C,Path),
    dfs([V|Path],C,G).
 
-% adding heurisitic which is dfs from goal
-
-% src is S, dest is G, we assert heuristic(S,G,D)
 dfs_with_dist(Path,S,D,V,G):-
     V=G, print_list([V|Path]),
     nl,
-    assertz(h_n(S,G,D)),writeln(asserted_heuristic(S,G,D)).
+   writeln(distance(D)).
 
     
 dfs_with_dist(Path,S,D,V,G):-
@@ -93,3 +108,6 @@ best_first(Path,S,D,V,G):-
 
 % you have leaves and you have path, at node v, you have to append its children to leaves, 
 % then choose the min leaf and remove it from leaves and add it to path
+
+
+%heuristics
