@@ -26,7 +26,7 @@ from durable.lang import *
 
 
 with ruleset('avg_grade'):
-    
+    #ML
     @when_all(pri(0),(m.interest=='Data Science') & (m.avg_grade>9) &(m.no_of_courses>3) )
     def ML_researcher(c):
         c.assert_fact('career_path', { 'path': 'ML Researcher'})
@@ -34,6 +34,28 @@ with ruleset('avg_grade'):
     @when_all(pri(1),(m.interest=='Data Science') & (m.courses.anyItem((item.BigDataAnalytics >= 8))) )
     def data_analyst(c):
         c.assert_fact('career_path', { 'path': 'Data Analyst'})
+
+    #Economics
+    @when_all(pri(0),(m.interest=='Economics') & (m.avg_grade>=9) &(m.no_of_courses>=3) )
+    def economics_researcher(c):
+        c.assert_fact('career_path', { 'path': 'Economics Researcher'})
+
+    @when_all(pri(1),(m.interest=='Economics') & (m.courses.anyItem((item.MacroEconomics >= 9))) & (m.courses.anyItem((item.MicroEconomics >= 9))))
+    def economist(c):
+        c.assert_fact('career_path', { 'path': 'Economist'})
+
+    @when_all(pri(2),(m.interest=='Economics') & (m.courses.anyItem((item.FoundationsOfFinance >= 9))) )
+    def investment_banker(c):
+        c.assert_fact('career_path', { 'path': 'Investment Banker'})
+    
+    @when_all(pri(3),(m.interest=='Economics') & (m.courses.anyItem((item.ValuationAndPortfolioManagement >= 9))) )
+    def investment_analyst(c):
+        c.assert_fact('career_path', { 'path': 'Investment Analyst'})
+
+    @when_all(pri(4),(m.interest=='Economics') & (m.avg_grade>=7))
+    def consultant(c):
+        c.assert_fact('career_path', { 'path': 'Consultant'})
+
     @when_all(+m.interest)
     def compulsory(c):
 
@@ -55,7 +77,20 @@ with ruleset('career_path'):
     def output(c):
         print('You can be {0}'.format(c.m.path))
     
+    #economics chains
+    @when_all(m.path=='Economics Researcher')
+    def data_scientist(c):
+        c.assert_fact({ 'path': 'Economist'})
+
+    @when_all(m.path=='Economist')
+    def data_scientist(c):
+        c.assert_fact({ 'path': 'Consultant'})
     
+    @when_all(m.path=='Investment Analyst')
+    def data_scientist(c):
+        c.assert_fact({ 'path': 'Financial Consultant'})
+    
+
 
 # assert_fact('avg_grade',{'interest':'Data Science', 'avg_grade':9.5,'no_of_courses':5,'courses':[{'BDA':9.5}]})
 # print(get_facts('career_path'))
@@ -74,7 +109,7 @@ interests = {
             'SSH':0
             }
 courses = {
-            'Economics':['MicroEconomics','MacroEconomics','FoundationsOfFinance','EconometricsI','MoneyAndBanking','GameTheory'],
+            'Economics':['MicroEconomics','MacroEconomics','FoundationsOfFinance','EconometricsI','MoneyAndBanking','GameTheory','ValuationAndPortfolioManagement'],
             'Entrepreneurship':['RelevanceOfIntellectualPropertyForStartups','EntrepreneurialCommunication','EntrepreneurialKhichadi','EntrepreneurialFinance','NewVenturePlanning','CreativityInnovationAndInventiveProblemSolving','Healthcare InnovationAndEntrepreneurshipEssentials'],
             'Security':['NetworkSecurity','TopicsInAdaptiveCybersecurity','PrivacyAndSecurityInOnlineSocialMedia','IntroductionToBlockchainAndCryptocurrency','TheoryOfModernCryptography','MultimediaSecurity','NetworkAnonymityAndPrivacy','FoundationsOfComputerSecurity','NetworksAndSystemSecurityII','TopicsInCryptanalysis'],
             'Mathematics':[],
