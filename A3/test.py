@@ -56,6 +56,21 @@ with ruleset('avg_grade'):
     def consultant(c):
         c.assert_fact('career_path', { 'path': 'Consultant'})
 
+    #Entrepreneurship
+    @when_all(pri(0),(m.interest=='Entrepreneurship') & (m.avg_grade>=9) &(m.no_of_courses>=3) )
+    def ent_prof(c):
+        c.assert_fact('career_path', { 'path': 'Entrepreneurship Professor'})
+
+    @when_all(pri(1),(m.interest=='Entrepreneurship') & (m.avg_grade>=7) )
+    def ent_prof(c):
+        c.assert_fact('career_path', { 'path': 'Entrepreneur'})
+
+    @when_all((m.interest=='Entrepreneurship') & (m.courses.anyItem((item.EntrepreneurialCommunication >= 8))) )
+    def sales_manager(c):
+        c.assert_fact('career_path', { 'path': 'Sales Manager'})
+
+        
+
     @when_all(+m.interest)
     def compulsory(c):
 
@@ -90,6 +105,13 @@ with ruleset('career_path'):
     def data_scientist(c):
         c.assert_fact({ 'path': 'Financial Consultant'})
     
+    #entrepreneurship
+    @when_all(m.path=='Entrepreneurship Professor')
+    def entrepreneur(c):
+        c.assert_fact({ 'path': 'Entrepreneur'})
+    @when_all(m.path=='Entrepreneur')
+    def entrepreneur(c):
+        c.assert_fact({ 'path': 'Business Consultant'})
 
 
 # assert_fact('avg_grade',{'interest':'Data Science', 'avg_grade':9.5,'no_of_courses':5,'courses':[{'BDA':9.5}]})
@@ -137,10 +159,9 @@ for key in interests.keys():
             courses_done.append({'interest':key, 'avg_grade':0,'no_of_courses':0,'courses':interest_courses_done})
 for i in courses_done:
     assert_fact('avg_grade',i)
+
+
+
+
 print(courses_done)
-
-
-
-
-
 print(interests)
