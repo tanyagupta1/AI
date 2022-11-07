@@ -22,14 +22,8 @@ from durable.lang import *
 
 # rules of type {interest, avg grade, no_of_courses, courses taken with grades}
 
-with ruleset('interest'): # a
-    @when_all(m.interest_magnitude>2)
-    def explore_interest(c):
-        c.assert_fact('avg_grade',{})
 
-        
 
-    
 
 with ruleset('avg_grade'):
     
@@ -37,10 +31,13 @@ with ruleset('avg_grade'):
     def ML_researcher(c):
         c.assert_fact('career_path', { 'path': 'ML Researcher'})
 
-    @when_all(pri(1),(m.interest=='Data Science') & (m.courses.anyItem((item.BDA >= 8))) )
+    @when_all(pri(1),(m.interest=='Data Science') & (m.courses.anyItem((item.BigDataAnalytics >= 8))) )
     def data_analyst(c):
         c.assert_fact('career_path', { 'path': 'Data Analyst'})
-    
+    @when_all(+m.interest)
+    def compulsory(c):
+
+        pass
     
 
 with ruleset('career_path'):
@@ -77,13 +74,13 @@ interests = {
             'SSH':0
             }
 courses = {
-            'Economics':['MicroEconomics','MacroEconomics','Foundations of Finance','Econometrics I','Money and Banking','Game Theory'],
-            'Entrepreneurship':['Relevance of Intellectual Property for Startups','Entrepreneurial Communication','Entrepreneurial Khichadi','Entrepreneurial Finance','New Venture Planning','Creativity, Innovation, and Inventive Problem Solving','Healthcare Innovation and Entrepreneurship Essentials'],
-            'Security':['Network Security','Topics in Adaptive Cybersecurity','Privacy and Security in Online Social Media','Introduction to Blockchain and Cryptocurrency','Theory of Modern cryptography','Multimedia Security','Network Anonymity and Privacy','Foundations of Computer Security','Networks and System Security II','Topics in Cryptanalysis'],
+            'Economics':['MicroEconomics','MacroEconomics','FoundationsOfFinance','EconometricsI','MoneyAndBanking','GameTheory'],
+            'Entrepreneurship':['RelevanceOfIntellectualPropertyForStartups','EntrepreneurialCommunication','EntrepreneurialKhichadi','EntrepreneurialFinance','NewVenturePlanning','CreativityInnovationAndInventiveProblemSolving','Healthcare InnovationAndEntrepreneurshipEssentials'],
+            'Security':['NetworkSecurity','TopicsInAdaptiveCybersecurity','PrivacyAndSecurityInOnlineSocialMedia','IntroductionToBlockchainAndCryptocurrency','TheoryOfModernCryptography','MultimediaSecurity','NetworkAnonymityAndPrivacy','FoundationsOfComputerSecurity','NetworksAndSystemSecurityII','TopicsInCryptanalysis'],
             'Mathematics':[],
             'Software Engineering':[], 
             'Theoretical Computer Science':[],
-            'Data Science':[],
+            'Data Science':['BigDataAnalytics','InformationRetrieval','DataScience','DeepLearning','BayesianMachineLearning','StatisticalMachineLearning','MachineLearning','ReinforcementLearning','DataMining'],
             'Electronics':[],
             'SSH':[]
             }
@@ -92,15 +89,19 @@ courses_done=[] # entry made if interest>2
 for key in interests.keys():
     interests[key] = int(input(key+': '))
     if(interests[key]>2):
-        interest_courses_done={}
+        interest_courses_done=[]
         grade_sum=0
         for course in courses[key]:
             grade = int(input("Grade in "+course+": "))
             if(grade>0):
-                interest_courses_done[course]=grade
+                interest_courses_done.append({course:grade})
                 grade_sum+=grade
-
-        courses_done.append({'interest':key, 'avg_grade':grade_sum/len(interest_courses_done),'courses':interest_courses_done})
+        try:
+            courses_done.append({'interest':key, 'avg_grade':grade_sum/len(interest_courses_done),'no_of_courses':len(interest_courses_done),'courses':interest_courses_done})
+        except:
+            courses_done.append({'interest':key, 'avg_grade':0,'no_of_courses':0,'courses':interest_courses_done})
+for i in courses_done:
+    assert_fact('avg_grade',i)
 print(courses_done)
 
 
