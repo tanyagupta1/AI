@@ -79,13 +79,25 @@ with ruleset('avg_grade'):
         c.assert_fact('career_path', { 'path': 'Video Game Developer'})
 
     @when_all((m.interest=='Software Engineering') & (m.courses.anyItem((item.CloudComputing>= 8))))
-    def devops_engineer(c):
+    def cloud_engineer(c):
         c.assert_fact('career_path', { 'path': 'Cloud Engineer'})  
 
     @when_all((m.interest=='Software Engineering') & (m.courses.anyItem((item.MobileComputing>= 8))))
-    def devops_engineer(c):
+    def mobile_app_developer(c):
         c.assert_fact('career_path', { 'path': 'Mobile App Developer'})   
-        
+
+    # Social Science
+    @when_all((m.interest=='Social Science') & (m.courses.anyItem((item.IntroductionToPsychology>= 7)))&((m.courses.anyItem((item.CognitivePsychology>= 7)))or (m.courses.anyItem((item.SocialPsychology>= 7)))or (m.courses.anyItem((item.AttentionAndPerception>= 7)))) )
+    def psychologist(c):
+        c.assert_fact('career_path', { 'path': 'Psychologist'})     
+    
+    @when_all((m.interest=='Social Science') & (m.courses.anyItem((item.AdvancedWriting>= 7)))&((m.courses.anyItem((item.IntroductionToTheStudyOfLiterature>= 7)))or (m.courses.anyItem((item.NationAndHerNarratives>= 7)))or (m.courses.anyItem((item.IntroductionToIndianMythology>= 7)))) )
+    def writer(c):
+        c.assert_fact('career_path', { 'path': 'Writer'})
+
+    @when_all((m.interest=='Social Science') & (m.courses.anyItem((item.IntroductionToSociologyAndAnthropology>= 7)))&((m.courses.anyItem((item.BusinessAnthropology>= 7)))or (m.courses.anyItem((item.SociologicalTheory>= 7)))or (m.courses.anyItem((item.AnthropologyAndSocialMedia>= 7)))) )
+    def social_scientist(c):
+        c.assert_fact('career_path', { 'path': 'Social Scientist'})
 
     @when_all(+m.interest)
     def compulsory(c):
@@ -152,7 +164,7 @@ interests = {
             'Software Engineering':0, 
             'Data Science':0,
             'Electronics':0,
-            'SSH':0
+            'Social Science':0
             }
 courses = {
             'Economics':['MicroEconomics','MacroEconomics','FoundationsOfFinance','EconometricsI','MoneyAndBanking','GameTheory','ValuationAndPortfolioManagement'],
@@ -174,7 +186,21 @@ courses = {
             ], 
             'Data Science':['BigDataAnalytics','InformationRetrieval','DataScience','DeepLearning','BayesianMachineLearning','StatisticalMachineLearning','MachineLearning','ReinforcementLearning','DataMining'],
             'Electronics':[],
-            'SSH':[]
+            'Social Science':[
+                'IntroductionToPsychology',
+                'CognitivePsychology',
+                'SocialPsychology',
+                'AttentionAndPerception',
+                'AdvancedWriting',
+                'IntroductionToTheStudyOfLiterature',
+                'NationAndHerNarratives',
+                'IntroductionToIndianMythology',
+                'IntroductionToSociologyAndAnthropology',
+                'BusinessAnthropology',
+                'SociologicalTheory',
+                'AnthropologyAndSocialMedia',
+            ]
+
             }
 
 courses_done=[] # entry made if interest>2
