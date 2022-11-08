@@ -69,11 +69,26 @@ with ruleset('avg_grade'):
     def sales_manager(c):
         c.assert_fact('career_path', { 'path': 'Sales Manager'})
 
+    # software
+    @when_all((m.interest=='Software Engineering') & (m.avg_grade>=8) &(m.no_of_courses>=3) )
+    def devops_engineer(c):
+        c.assert_fact('career_path', { 'path': 'Fullstack Developer'}) 
+
+    @when_all((m.interest=='Software Engineering') & (m.courses.anyItem((item.GameDesignAndDevelopment>= 8))) & ((m.courses.anyItem((item.IntroductionTo2DAnimation>= 8)or(m.courses.anyItem((item.IntroductionToMotionGraphics>= 8)or(m.courses.anyItem((item.IntroductionTo3DCharacterAnimation>= 8)))))))))
+    def video_game_dev(c):
+        c.assert_fact('career_path', { 'path': 'Video Game Developer'})
+
+    @when_all((m.interest=='Software Engineering') & (m.courses.anyItem((item.CloudComputing>= 8))))
+    def devops_engineer(c):
+        c.assert_fact('career_path', { 'path': 'Cloud Engineer'})  
+
+    @when_all((m.interest=='Software Engineering') & (m.courses.anyItem((item.MobileComputing>= 8))))
+    def devops_engineer(c):
+        c.assert_fact('career_path', { 'path': 'Mobile App Developer'})   
         
 
     @when_all(+m.interest)
     def compulsory(c):
-
         pass
     
 
@@ -113,6 +128,16 @@ with ruleset('career_path'):
     def entrepreneur(c):
         c.assert_fact({ 'path': 'Business Consultant'})
 
+    #software
+    @when_all(m.path=='Fullstack Developer')
+    def entrepreneur(c):
+        c.assert_fact({ 'path': 'Frontend Developer'})
+    @when_all(m.path=='Fullstack Developer')
+    def entrepreneur(c):
+        c.assert_fact({ 'path': 'Backend Developer'})
+    @when_all(m.path=='Cloud Engineer')
+    def entrepreneur(c):
+        c.assert_fact({ 'path': 'Devops Engineer'})
 
 # assert_fact('avg_grade',{'interest':'Data Science', 'avg_grade':9.5,'no_of_courses':5,'courses':[{'BDA':9.5}]})
 # print(get_facts('career_path'))
@@ -125,7 +150,6 @@ interests = {
             'Security':0,
             'Mathematics':0,
             'Software Engineering':0, 
-            'Theoretical Computer Science':0,
             'Data Science':0,
             'Electronics':0,
             'SSH':0
@@ -135,8 +159,19 @@ courses = {
             'Entrepreneurship':['RelevanceOfIntellectualPropertyForStartups','EntrepreneurialCommunication','EntrepreneurialKhichadi','EntrepreneurialFinance','NewVenturePlanning','CreativityInnovationAndInventiveProblemSolving','Healthcare InnovationAndEntrepreneurshipEssentials'],
             'Security':['NetworkSecurity','TopicsInAdaptiveCybersecurity','PrivacyAndSecurityInOnlineSocialMedia','IntroductionToBlockchainAndCryptocurrency','TheoryOfModernCryptography','MultimediaSecurity','NetworkAnonymityAndPrivacy','FoundationsOfComputerSecurity','NetworksAndSystemSecurityII','TopicsInCryptanalysis'],
             'Mathematics':[],
-            'Software Engineering':[], 
-            'Theoretical Computer Science':[],
+            'Software Engineering':
+            ['IntroductionTo2DAnimation',
+            'IntroductionToMotionGraphics',
+            'IntroductionTo3DCharacterAnimation',
+            'GameDesignAndDevelopment',
+            'MobileComputing',
+            'IntroductionToProgramming',
+            'DataStructuresAndAlgorithms',
+            'FundamentalsOfDatabaseManagementSystem',
+            'MobileComputing',
+            'SoftwareDevelopmentUsingOpenSource',
+            'CloudComputing'
+            ], 
             'Data Science':['BigDataAnalytics','InformationRetrieval','DataScience','DeepLearning','BayesianMachineLearning','StatisticalMachineLearning','MachineLearning','ReinforcementLearning','DataMining'],
             'Electronics':[],
             'SSH':[]
