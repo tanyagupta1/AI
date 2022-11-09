@@ -99,6 +99,27 @@ with ruleset('avg_grade'):
     def social_scientist(c):
         c.assert_fact('career_path', { 'path': 'Social Scientist'})
 
+    #cybersecurity
+    @when_all(pri(0),(m.interest=='Cyber Security') & (m.avg_grade>=9) &(m.no_of_courses>=3) )
+    def sec_res(c):
+        c.assert_fact('career_path', { 'path': 'Security Researcher'})
+
+    @when_all(pri(1),(m.interest=='Cyber Security') & (m.avg_grade>=8) )
+    def sec_eng(c):
+        c.assert_fact('career_path', { 'path': 'CyberSecurity Engineer'})
+
+    @when_all((m.interest=='Cyber Security') & (m.courses.anyItem((item.NetworkSecurity>= 8))) & (m.courses.anyItem((item.NetworksAndSystemSecurityII>= 8))) )
+    def ns_eng(c):
+        c.assert_fact('career_path', { 'path': 'Newtork Security Engineer'})
+    
+    @when_all((m.interest=='Cyber Security') & (m.courses.anyItem((item.TheoryOfModernCryptography>= 8))) or (m.courses.anyItem((item.AppliedCryptography>= 8))) or (m.courses.anyItem((item.TopicsInCryptanalysis>= 8)))  )
+    def cryptographer(c):
+        c.assert_fact('career_path', { 'path': 'Cryptographer'})
+
+    @when_all((m.interest=='Cyber Security') & (m.courses.anyItem((item.IntroductionToBlockchainAndCryptocurrency>= 8))))
+    def blockchain_dev(c):
+        c.assert_fact('career_path', { 'path': 'Blockchain Developer'})  
+
     @when_all(+m.interest)
     def compulsory(c):
         pass
@@ -148,8 +169,16 @@ with ruleset('career_path'):
     def entrepreneur(c):
         c.assert_fact({ 'path': 'Backend Developer'})
     @when_all(m.path=='Cloud Engineer')
-    def entrepreneur(c):
+    def devops(c):
         c.assert_fact({ 'path': 'Devops Engineer'})
+
+    #cybersecurity
+    @when_all(m.path=='Security Researcher')
+    def sec_eng(c):
+        c.assert_fact({ 'path': 'CyberSecurity Engineer'})
+    @when_all(m.path=='Security Researcher')
+    def sec_arch(c):
+        c.assert_fact({ 'path': 'CyberSecurity Architect'})
 
 # assert_fact('avg_grade',{'interest':'Data Science', 'avg_grade':9.5,'no_of_courses':5,'courses':[{'BDA':9.5}]})
 # print(get_facts('career_path'))
@@ -159,18 +188,28 @@ print("Rate interest in these areas on a scale of 1-5")
 interests = {
             'Economics':0,
             'Entrepreneurship':0,
-            'Security':0,
-            'Mathematics':0,
             'Software Engineering':0, 
             'Data Science':0,
-            'Electronics':0,
-            'Social Science':0
+            'Social Science':0,
+            'Cyber Security':0
             }
 courses = {
             'Economics':['MicroEconomics','MacroEconomics','FoundationsOfFinance','EconometricsI','MoneyAndBanking','GameTheory','ValuationAndPortfolioManagement'],
             'Entrepreneurship':['RelevanceOfIntellectualPropertyForStartups','EntrepreneurialCommunication','EntrepreneurialKhichadi','EntrepreneurialFinance','NewVenturePlanning','CreativityInnovationAndInventiveProblemSolving','Healthcare InnovationAndEntrepreneurshipEssentials'],
-            'Security':['NetworkSecurity','TopicsInAdaptiveCybersecurity','PrivacyAndSecurityInOnlineSocialMedia','IntroductionToBlockchainAndCryptocurrency','TheoryOfModernCryptography','MultimediaSecurity','NetworkAnonymityAndPrivacy','FoundationsOfComputerSecurity','NetworksAndSystemSecurityII','TopicsInCryptanalysis'],
-            'Mathematics':[],
+            'Cyber Security':
+            [
+                'NetworkSecurity',
+                'TopicsInAdaptiveCybersecurity',
+                'PrivacyAndSecurityInOnlineSocialMedia',
+                'IntroductionToBlockchainAndCryptocurrency',
+                'TheoryOfModernCryptography',
+                'AppliedCryptography',
+                'MultimediaSecurity',
+                'NetworkAnonymityAndPrivacy',
+                'FoundationsOfComputerSecurity',
+                'NetworksAndSystemSecurityII',
+                'TopicsInCryptanalysis'
+            ],
             'Software Engineering':
             ['IntroductionTo2DAnimation',
             'IntroductionToMotionGraphics',
@@ -185,7 +224,6 @@ courses = {
             'CloudComputing'
             ], 
             'Data Science':['BigDataAnalytics','InformationRetrieval','DataScience','DeepLearning','BayesianMachineLearning','StatisticalMachineLearning','MachineLearning','ReinforcementLearning','DataMining'],
-            'Electronics':[],
             'Social Science':[
                 'IntroductionToPsychology',
                 'CognitivePsychology',
@@ -218,11 +256,12 @@ for key in interests.keys():
             courses_done.append({'interest':key, 'avg_grade':grade_sum/len(interest_courses_done),'no_of_courses':len(interest_courses_done),'courses':interest_courses_done})
         except:
             courses_done.append({'interest':key, 'avg_grade':0,'no_of_courses':0,'courses':interest_courses_done})
+print("Career Suggestions:")
 for i in courses_done:
     assert_fact('avg_grade',i)
 
 
 
 
-print(courses_done)
-print(interests)
+# print(courses_done)
+# print(interests)
