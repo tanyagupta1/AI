@@ -34,6 +34,10 @@ with ruleset('avg_grade'):
     @when_all(pri(1),(m.interest=='Data Science') & (m.courses.anyItem((item.BigDataAnalytics >= 8))) )
     def data_analyst(c):
         c.assert_fact('career_path', { 'path': 'Data Analyst'})
+    @when_all(pri(1),(m.interest=='Data Science') & ( (m.courses.anyItem((item.InformationRetrieval>= 8))) or (m.courses.anyItem((item.DataMining >= 8))) ) )
+    def data_engineer(c):
+        c.assert_fact('career_path', { 'path': 'Data Engineer'})
+
 
     #Economics
     @when_all(pri(0),(m.interest=='Economics') & (m.avg_grade>=9) &(m.no_of_courses>=3) )
@@ -223,7 +227,15 @@ courses = {
             'SoftwareDevelopmentUsingOpenSource',
             'CloudComputing'
             ], 
-            'Data Science':['BigDataAnalytics','InformationRetrieval','DataScience','DeepLearning','BayesianMachineLearning','StatisticalMachineLearning','MachineLearning','ReinforcementLearning','DataMining'],
+            'Data Science':['BigDataAnalytics',
+            'InformationRetrieval',
+            'DataScience',
+            'DeepLearning',
+            'BayesianMachineLearning',
+            'StatisticalMachineLearning',
+            'MachineLearning',
+            'ReinforcementLearning',
+            'DataMining'],
             'Social Science':[
                 'IntroductionToPsychology',
                 'CognitivePsychology',
