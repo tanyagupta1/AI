@@ -188,7 +188,7 @@ with ruleset('career_path'):
 # print(get_facts('career_path'))
 
 # input
-print("Rate interest in these areas on a scale of 1-5")
+print("Welcome to Career Trajectory Advisory System")
 interests = {
             'Economics':0,
             'Entrepreneurship':0,
@@ -255,7 +255,7 @@ courses = {
 
 courses_done=[] # entry made if interest>2
 for key in interests.keys():
-    interests[key] = int(input(key+': '))
+    interests[key] = int(input("Rate your interest in "+key+" on a scale of 1-5 :"))
     if(interests[key]>2):
         interest_courses_done=[]
         grade_sum=0
