@@ -10,6 +10,12 @@
 reset_electives:-
     retractall(suggested(_)),
     retractall(done(_)),
+    retractall(branch_inp(_)),
+    retractall(done_inp(_)),
+    retractall(elective_inp(_)),
+    retractall(interest_inp(_)),
+    retractall(eco_minor_inp(_)),
+    retractall(ent_minor_inp(_)),
     fail.
 
 reset_electives.
@@ -20,10 +26,14 @@ get_courses():-
     assertz(done(X)),fail.
 
 print_list([]).
-
 print_list([X|Y]):-
     write(X),
     nl,print_list(Y).
+
+print_list_assert([]).
+print_list_assert([X|Y]):-
+    assertz(suggested(X)),write(X),
+    nl,print_list_assert(Y).
 
 get_rec() :-
     write("input branch(cse/csam/ece/csb/csd): ")
@@ -50,7 +60,7 @@ check_res(n,TBD,DONE,[X|Y]):-
 
 interactive_get_core(CORE_TBD,CORE_DONE,[]):-
     write("Complete these core courses: "),
-    nl,print_list(CORE_TBD),
+    nl,print_list_assert(CORE_TBD),
     nl,write("These have been done:"),
     nl,print_list(CORE_DONE),
     nl,write("You are eligible for these electives based on core courses:"),
@@ -91,7 +101,7 @@ more_eco_recs(y):-
 check_eco_rec(y):-
     career_path(economist,ECO_CR),
     contains(EC,ECO_CR),course(EC,NM,PRE),
-    prereqsdone(PRE),\+done(EC),\+suggested(EC),
+    prereqsdone(PRE),\+done(EC),\+suggested(EC),assertz(suggested(EC)),
     write(EC),write(":"),write(NM),nl,fail.
 
 check_eco_rec(n):-fail.
@@ -117,7 +127,7 @@ more_ent_recs(y):-
 check_ent_rec(y):-
     career_path(entrepreneurship,ENT_CR),
     contains(EN,ENT_CR),course(EN,NM,PRE),
-    prereqsdone(PRE),\+done(EN),\+suggested(EN),
+    prereqsdone(PRE),\+done(EN),\+suggested(EN),assertz(suggested(EN)),
     write(EN),write(":"),write(NM),nl,fail.
 
 check_ent_rec(n):-fail.
@@ -142,7 +152,7 @@ get_electives(CORE):-
 
 get_electives2():-
     course(C,NM,PRE),
-    prereqsdone(PRE),\+done(C),
+    prereqsdone(PRE),\+done(C),\+suggested(C),assertz(suggested(C)),
     write(C),write(":"),write(NM),nl,fail.
 
 prereqsdone([H|T]):-

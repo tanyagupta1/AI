@@ -1,0 +1,14 @@
+branch_inp(cse).
+done_inp(cse101).
+done_inp(ece111).
+done_inp(mth100).
+done_inp(des130).
+done_inp(com101).
+done_inp(ent416).
+done_inp(ent411).
+done_inp(ent412).
+done_inp(ent413).
+done_inp(ent415).
+eco_minor_inp(economics).
+interest_inp(data_science).
+interest_inp(cybersecurity).
